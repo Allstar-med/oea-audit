@@ -1,0 +1,81 @@
+{
+  "label_keys_unique": {
+    "result": "PASS",
+    "detail": "5400 rows, 0 duplicates"
+  },
+  "label_status_complete": {
+    "result": "PASS",
+    "detail": "Counter({'complete_3_raters': 5400})"
+  },
+  "majority_recomputes_from_raters": {
+    "result": "PASS",
+    "detail": ""
+  },
+  "prediction_keys_unique_per_model": {
+    "result": "PASS",
+    "detail": "16200 rows"
+  },
+  "models_match_manifest": {
+    "result": "PASS",
+    "detail": "pred ['endoscapes_srconly_resnet18_160_seed17_v1', 'endoscapes_srconly_resnet18_160_seed29_v1', 'endoscapes_srconly_resnet18_160_seed43_v1'] manifest ['endoscapes_srconly_resnet18_160_seed17_v1', 'endoscapes_srconly_resnet18_160_seed29_v1', 'endoscapes_srconly_resnet18_160_seed43_v1']"
+  },
+  "each_model_covers_exactly_label_keys": {
+    "result": "PASS",
+    "detail": {
+      "endoscapes_srconly_resnet18_160_seed17_v1": 5400,
+      "endoscapes_srconly_resnet18_160_seed29_v1": 5400,
+      "endoscapes_srconly_resnet18_160_seed43_v1": 5400
+    }
+  },
+  "no_failed_inference_rows": {
+    "result": "PASS",
+    "detail": "0 non-ok rows"
+  },
+  "probabilities_finite_in_0_1": {
+    "result": "PASS",
+    "detail": ""
+  },
+  "class_order_declared": {
+    "result": "PASS",
+    "detail": ""
+  },
+  "checkpoint_sha256_matches_manifest": {
+    "result": "PASS",
+    "detail": {
+      "endoscapes_srconly_resnet18_160_seed17_v1": true,
+      "endoscapes_srconly_resnet18_160_seed29_v1": true,
+      "endoscapes_srconly_resnet18_160_seed43_v1": true
+    }
+  },
+  "first_sages_inference_after_freeze": {
+    "result": "PASS",
+    "detail": "frozen 2026-10-16 22:43:21 +0800 first 2026-10-16 22:44:06 +0800"
+  },
+  "model_manifest_unchanged_since_inference": {
+    "result": "PASS",
+    "detail": "now f65af688cf09 at inference f65af688cf09"
+  },
+  "inference_verified_checkpoint_hashes": {
+    "result": "PASS",
+    "detail": ""
+  },
+  "no_sages_checkpoint_selection": {
+    "result": "PASS",
+    "detail": ""
+  },
+  "no_video_image_or_weight_files_in_bundle": {
+    "result": "PASS",
+    "detail": "[]"
+  },
+  "file_sha256": {
+    "dataset_audit.json": "c411f466e429dca7d1d0108d482655c3a17a9367ac305c5e9e5a056802b75c9b",
+    "execution.log": "e547b66fdaa83b0c0bd87c66a445ac3287cfe0f418b903215584e60477233fab",
+    "inference_log.json": "2e272ca8130d84357ac72145810adea7888b1e437e66b0b1b23f0b4440487058",
+    "model_manifest.json": "f65af688cf09995b671fdf90a96146c12b79eae88dea206f978e4cf07236638f",
+    "requirements.txt": "7a984bcac2a2014e152a5f325bfbbe55b99924b626bda5ef5520f9b0625e65bf",
+    "sages_labels.csv": "55a69e8e564ffbecf2c22321bb22447ba8abd153a8b129f8f9f8a1a8256eb9a3",
+    "sages_predictions.csv": "0878d1250b8b1d3e78a74c4556e3961b727d09df56d073387ea85038b446e38a",
+    "video_manifest.csv": "0a7d5d959c4db11e017f864f9c843e1876f6e1bdf3e1811eef1110503c5306c5"
+  },
+  "overall": "PASS"
+}

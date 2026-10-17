@@ -1,0 +1,368 @@
+{
+  "generated_at": "2026-10-16 23:24:35 +0800",
+  "dataset": {
+    "name": "SAGES Critical View of Safety Challenge 2024 dataset",
+    "source_url": "https://huggingface.co/datasets/CAMMA-public/SAGES_CVS_Challenge_2024",
+    "dataset_version": "hf:CAMMA-public/SAGES_CVS_Challenge_2024@deef093e7fc6522a6c5e6bd3d3bab3408e7588d4",
+    "download": "2026-10-16, huggingface_hub snapshot_download pinned to the revision above; 3225/3225 files present with byte sizes matching repository metadata; all 1000 videos SHA256-identical to the repository LFS hashes",
+    "citation": "Alapatt D, et al. The SAGES Critical View of Safety Challenge: A Global Benchmark for AI-Assisted Surgical Quality Assessment. arXiv:2509.17100 (2025)"
+  },
+  "license": {
+    "name": "CC BY-NC 4.0",
+    "file": "LICENSE_CC_BY_NC_4.0.txt",
+    "implications": "non-commercial use only; sharing and adaptation allowed with attribution and no added restrictions, so de-identified row-level labels/predictions may be shared for this non-commercial study; not usable for a commercial product",
+    "commercial_research_use": "not permitted"
+  },
+  "evaluation_partition": {
+    "split": "official test (predefined by the organizers; full reference labels publicly released)",
+    "official_test": true,
+    "clips": 300,
+    "labelled_frames": 5400,
+    "split_method_per_paper": "random split of 1,000 cases into 700 train / 300 test (Fig. 3 caption)",
+    "sages_train_split_used_for_anything": false
+  },
+  "schema": {
+    "metadata_columns": [
+      "video_name",
+      "ioc",
+      "icg",
+      "robotic",
+      "country",
+      "device"
+    ],
+    "frame_label_columns": [
+      "frame_id|c1_rater1|c1_rater2|c1_rater3|c2_rater1|c2_rater2|c2_rater3|c3_rater1|c3_rater2|c3_rater3"
+    ],
+    "video_label_columns": [
+      "c1_rater1|c1_rater2|c1_rater3|c2_rater1|c2_rater2|c2_rater3|c3_rater1|c3_rater2|c3_rater3|confidence_rater1|confidence_rater2|confidence_rater3"
+    ],
+    "frame_label_values": {
+      "0": 40180,
+      "1": 8420
+    },
+    "frames_per_clip": {
+      "18": 300
+    },
+    "frame_id_step": {
+      "150": 300
+    },
+    "frame_id_definition": "0-indexed sequential decode index at 30 fps; labelled frame_ids 0..2550 step 150 (every 5 s, 18 per clip)",
+    "fps": {
+      "30.000": 300
+    },
+    "resolution": {
+      "1280x720": 199,
+      "1362x720": 1,
+      "1920x1080": 54,
+      "640x360": 6,
+      "720x480": 23,
+      "720x576": 7,
+      "852x480": 1,
+      "854x480": 9
+    },
+    "rater_identity": "rater1..3 are column positions, not fixed individuals (official README)",
+    "majority_rule": "pre-specified 2-of-3; all labels binary and complete, so majority is always defined",
+    "readme_vs_files": "README says annotated every 5 s; files confirm 18 frames per 90-s clip (paper: 18 frames)"
+  },
+  "missing_and_anomalies": {
+    "rows_with_missing_rater": 0,
+    "duplicate_frame_ids": 0,
+    "unreadable_videos": [],
+    "decode_failures_at_labelled_frames": 0,
+    "near_black_labelled_frames": 0,
+    "extra_non_data_files": {
+      "test": {
+        "._frame.csv": 104,
+        "._video.csv": 104
+      },
+      "train": {
+        ".~lock.frame.csv#": 2,
+        ".~lock.video.csv#": 2
+      },
+      "note": "macOS '._*' and LibreOffice '.~lock.*#' artefacts shipped in the repository; ignored"
+    },
+    "visible_overlays": "at least one test clip (664a48be..., duplicate of c8063d76...) shows an on-screen date/time stamp; no images are included in the deliverables"
+  },
+  "frame_alignment_qa": {
+    "frames_compared": 54,
+    "max_mad_official_vs_ours": 0.7866670283564815,
+    "frames_where_neighbor_closer_than_aligned": 0,
+    "method": "official tools/preprocess_videos.py (--fps 0.2) vs this pipeline's PNG on 3 clips; aligned frame must be closer than frames i-1 and i+1"
+  },
+  "deduplication": {
+    "frozen_at": "2026-10-16 21:36:04 +0800 (git c391c93), before any model training or SAGES inference",
+    "rule": "same footage if video SHA256 identical, or >=5 of 90 one-per-second frames have a pHash neighbour <=4 bits in the other clip at a modal frame offset of 0, confirmed by visual side-by-side review",
+    "clips": 300,
+    "footage_groups": 293,
+    "duplicate_groups": [
+      {
+        "footage_group_id": "FG023",
+        "clips": [
+          "1091030d-17d1-4d76-87c0-a917633fc5bf",
+          "4aeef72c-1d13-4fae-8dd7-e0e3144e9509"
+        ],
+        "kept_in_primary": "1091030d-17d1-4d76-87c0-a917633fc5bf",
+        "evidence": [
+          "1091030d~4aeef72c:byte_identical_video"
+        ]
+      },
+      {
+        "footage_group_id": "FG025",
+        "clips": [
+          "13c28a0c-ff1a-4e46-a9e9-b1b125e01216",
+          "63dbd239-87d0-412f-bdf0-b1e9d7af16d5"
+        ],
+        "kept_in_primary": "13c28a0c-ff1a-4e46-a9e9-b1b125e01216",
+        "evidence": [
+          "13c28a0c~63dbd239:phash_offset0_75of90_le4+visual"
+        ]
+      },
+      {
+        "footage_group_id": "FG087",
+        "clips": [
+          "5e6e9783-0e37-4c82-945c-8d5868c6d4d7",
+          "fb568876-f365-4625-a8e5-1277b45a4e75"
+        ],
+        "kept_in_primary": "5e6e9783-0e37-4c82-945c-8d5868c6d4d7",
+        "evidence": [
+          "5e6e9783~fb568876:phash_offset0_47of90_le4+visual"
+        ]
+      },
+      {
+        "footage_group_id": "FG096",
+        "clips": [
+          "664a48be-a38f-4bdf-a18d-d902af8da49c",
+          "c8063d76-af4f-44da-afc6-12bcf8947595"
+        ],
+        "kept_in_primary": "664a48be-a38f-4bdf-a18d-d902af8da49c",
+        "evidence": [
+          "664a48be~c8063d76:phash_offset0_90of90_le4+visual"
+        ]
+      },
+      {
+        "footage_group_id": "FG128",
+        "clips": [
+          "917a55f6-0776-45a4-88e3-14aef4661231",
+          "9cca99cd-7281-4a12-8004-0a0ebadb287f"
+        ],
+        "kept_in_primary": "917a55f6-0776-45a4-88e3-14aef4661231",
+        "evidence": [
+          "917a55f6~9cca99cd:phash_offset0_6of90_le4+visual"
+        ]
+      },
+      {
+        "footage_group_id": "FG191",
+        "clips": [
+          "bjlyuhyt-do5i-5wuz-qpy0-r8sfnfd3u4ae",
+          "jhqgu0pn-x6jd-o1gy-p414-mm1ai2j7lkz0"
+        ],
+        "kept_in_primary": "bjlyuhyt-do5i-5wuz-qpy0-r8sfnfd3u4ae",
+        "evidence": [
+          "bjlyuhyt~jhqgu0pn:phash_offset0_88of90_le4+visual"
+        ]
+      },
+      {
+        "footage_group_id": "FG237",
+        "clips": [
+          "dopqkgu5-qqo8-pv8w-8u0v-3odkd2o17uux",
+          "oalrz9h2-43z1-ld11-5axd-6xlfa5ifco7x"
+        ],
+        "kept_in_primary": "dopqkgu5-qqo8-pv8w-8u0v-3odkd2o17uux",
+        "evidence": [
+          "dopqkgu5~oalrz9h2:phash_offset0_85of90_le4+visual"
+        ]
+      }
+    ],
+    "primary_rule": "keep the lexicographically smallest clip_id per footage group (label-blind)",
+    "note": "several duplicate pairs carry different rater labels for the same footage (independent re-annotation)",
+    "sages_train_byte_identical_pairs": [
+      [
+        "4bf377a4-5b38-440b-9dcc-e28873555409",
+        "701a8013-862c-4f04-992b-e8b703c6e542"
+      ]
+    ]
+  },
+  "operation_and_patient_identity": {
+    "available_identifier": "video_name (one 90-s clip)",
+    "paper_statement": "\"1,000 laparoscopic cholecystectomy cases, each represented by a 90-second clip\" (Sec. 4.2)",
+    "procedure_level_mapping": "not provided; clip treated as the case/operation unit after footage deduplication",
+    "patient_independence": "not stated by the organizers; cannot be verified from released data",
+    "status": "LIMITATION: clusters are footage groups (clip level); patient-level independence unconfirmed"
+  },
+  "label_support": {
+    "all_300_clips": {
+      "C1": {
+        "frames": 5400,
+        "positive_frames": 587,
+        "negative_frames": 4813,
+        "clips": 300,
+        "estimable_clips_both_classes": 95,
+        "clips_all_negative": 201,
+        "clips_all_positive": 4,
+        "within_clip_pairs": 5225,
+        "all_pairs": 2825231
+      },
+      "C2": {
+        "frames": 5400,
+        "positive_frames": 1280,
+        "negative_frames": 4120,
+        "clips": 300,
+        "estimable_clips_both_classes": 162,
+        "clips_all_negative": 135,
+        "clips_all_positive": 3,
+        "within_clip_pairs": 9330,
+        "all_pairs": 5273600
+      },
+      "C3": {
+        "frames": 5400,
+        "positive_frames": 562,
+        "negative_frames": 4838,
+        "clips": 300,
+        "estimable_clips_both_classes": 78,
+        "clips_all_negative": 221,
+        "clips_all_positive": 1,
+        "within_clip_pairs": 4336,
+        "all_pairs": 2718956
+      }
+    },
+    "primary_293_footage_groups": {
+      "C1": {
+        "frames": 5274,
+        "positive_frames": 570,
+        "negative_frames": 4704,
+        "clips": 293,
+        "estimable_clips_both_classes": 92,
+        "clips_all_negative": 197,
+        "clips_all_positive": 4,
+        "within_clip_pairs": 5076,
+        "all_pairs": 2681280
+      },
+      "C2": {
+        "frames": 5274,
+        "positive_frames": 1244,
+        "negative_frames": 4030,
+        "clips": 293,
+        "estimable_clips_both_classes": 158,
+        "clips_all_negative": 132,
+        "clips_all_positive": 3,
+        "within_clip_pairs": 9104,
+        "all_pairs": 5013320
+      },
+      "C3": {
+        "frames": 5274,
+        "positive_frames": 545,
+        "negative_frames": 4729,
+        "clips": 293,
+        "estimable_clips_both_classes": 76,
+        "clips_all_negative": 216,
+        "clips_all_positive": 1,
+        "within_clip_pairs": 4259,
+        "all_pairs": 2577305
+      }
+    }
+  },
+  "endoscapes_overlap": {
+    "paper": "no statement on excluding previously published datasets; contributing hospitals not named; author affiliations include IHU Strasbourg / University of Strasbourg (Endoscapes2023 origin)",
+    "screen_method": "64-bit DCT pHash; all 27,000 one-per-second frames of the 300 SAGES test clips vs all 58,813 frames of the official Endoscapes2023 zip (SHA256 0574b11a...); calibration below",
+    "screen": {
+      "adjacent_same_video_n": 55802,
+      "adjacent_same_video_percentiles": {
+        "0.1": 0.0,
+        "1": 2.0,
+        "5": 4.0,
+        "25": 10.0,
+        "50": 16.0,
+        "75": 22.0,
+        "95": 30.0
+      },
+      "random_cross_dataset_n": 200000,
+      "random_cross_dataset_percentiles": {
+        "0.1": 16.0,
+        "1": 20.0,
+        "5": 24.0,
+        "25": 28.0,
+        "50": 30.0,
+        "75": 32.0,
+        "95": 36.0
+      },
+      "note": "adjacent = consecutive Endoscapes frames of one video <=25 source-frame-index apart, both non-black",
+      "sages_min_distance_histogram_0_64": [
+        0,
+        0,
+        0,
+        0,
+        4,
+        0,
+        79,
+        0,
+        621,
+        0,
+        3687,
+        0,
+        9956,
+        0,
+        9727,
+        0,
+        2753,
+        0,
+        171,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "clips_with_any_frame_le4": 3,
+      "clips_with_any_frame_le8": 178,
+      "clips_with_ge5_frames_le8": 52
+    },
+    "visual_review": "top-6 closest pairs (Hamming 4-6) plus the 4 closest frames of the only clip whose near neighbours concentrated on one Endoscapes video (f1c28c63... -> video 122) were reviewed side by side: all show different procedures/scenes (similarity driven by the circular endoscopic vignette). No near-identical footage found.",
+    "positive_control": "the same method found all 7 SAGES-internal duplicate footage groups (6 at 0-bit distance on most frames); one re-encoded/colour-altered duplicate matched only 6/90 frames at <=4 bits, so heavily altered copies can be partially missed",
+    "limitations": "cannot detect same patient/procedure in a different time window, cropped or colour-graded copies, or same-centre overlap",
+    "maintainer_confirmation": "query drafted for sagescvschallenge2025@gmail.com; not yet answered",
+    "status": "no_near_identical_footage_found_by_screen; independence_NOT_confirmed_pending_maintainer",
+    "claim_allowed": "cross-dataset method transfer; do not write 'patient-independent external validation'"
+  },
+  "video_manifest_rows": 300
+}

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+results/
+figures/
+data/endoscapes/*
+!data/endoscapes/Endoscapes_10000_operation_bootstrap_CI.csv
+!data/endoscapes/Endoscapes_10000_paired_contrast_CI.csv
+data/figure_frames/endoscapes/
+data/frozen/Figures/
+data/frozen/Tables/Pair_disagreement.csv
