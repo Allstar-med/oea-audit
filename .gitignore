@@ -1,7 +1,7 @@
 __pycache__/
 *.pyc
-results/
-figures/
+/results/
+/figures/
 data/endoscapes/*
 !data/endoscapes/Endoscapes_10000_operation_bootstrap_CI.csv
 !data/endoscapes/Endoscapes_10000_paired_contrast_CI.csv

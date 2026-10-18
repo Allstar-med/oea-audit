@@ -1,8 +1,5 @@
-"""Figures built from original images.
-  - copies the four Fig. 1 frames from the verified Endoscapes JPEGs (SHA-256 checked) into figures/frames
-  - Fig. 3: dataset overview (Endoscapes + SAGES, stratified by number of criteria achieved)
-  - Fig. 9: within-operation trajectories (operation 196) + per-operation ranking disagreement
-python make_image_figs.py <endoscapes_test_dir> <sages_examples_dir> <linkage_csv> <sages_labels_csv> <pair_table_csv> <out_fig_dir>"""
+"""Fig. 3 (example frames and composition of both test sets) and Fig. 9 (operation 196 and ranking disagreement).
+Usage: python fig3_fig9.py ENDOSCAPES_FRAMES SAGES_FRAMES LINKAGE_CSV SAGES_LABELS PAIR_TABLE OUT_DIR"""
 import sys, os, hashlib
 import numpy as np, pandas as pd
 import matplotlib
@@ -11,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, ConnectionPatch
 from matplotlib.lines import Line2D
 from PIL import Image
+from scipy.stats import rankdata
 
 ED, SD, LINK, SLAB, PAIRS, OUT = sys.argv[1:7]
 MM = 1 / 25.4
@@ -39,12 +37,12 @@ def endo_img(v, f, check=True):
     return Image.open(p).convert("RGB")
 
 
-# ---- 1. original frames for Fig. 1 / Fig. 2 / graphical abstract
+# 1. original frames for Fig. 2 and the graphical abstract
 os.makedirs(os.path.join(OUT, "frames"), exist_ok=True)
 for v, f in [(196, 27400), (196, 35025), (192, 23825), (192, 24575)]:
     endo_img(v, f).save(os.path.join(OUT, "frames", f"{v}_{f}.png"))
 
-# ---- 2. Fig. 3 dataset overview
+# 2. Fig. 3 dataset overview
 L["k"] = L.y_c1 + L.y_c2 + L.y_c3
 rng = np.random.default_rng(20261017)
 endo_pick = {}
@@ -95,7 +93,7 @@ fpu = L.groupby("video").size().values
 ax.hist(fpu, bins=np.arange(0, 170, 10), color=ENDO_C)
 assert len(fpu) == 40 and fpu.max() < 170
 ax.axvline(18, color="#000000", lw=0.9, ls="--")
-ax.text(21, ax.get_ylim()[1] * 0.95, "SAGES: 18 per clip", color="#000000", fontsize=6, va="top")
+ax.text(23, ax.get_ylim()[1] * 0.88, "SAGES: 18 per clip", color="#000000", fontsize=6, va="center")
 ax.set_xlim(0, 170)
 ax.set_xlabel("Annotated frames per unit"); ax.set_ylabel("Number of operations")
 ax.set_title("Endoscapes operations", fontsize=6.5, pad=3)
@@ -115,7 +113,7 @@ sel = [dict(dataset="Endoscapes", stratum=k, unit=int(r.video), frame=int(r.fram
 sel += [dict(dataset="SAGES 2024", stratum=k, unit=r.clip_id, frame=int(r.frame_id), file=r.file, sha256=r.png_sha256) for k in range(4) for r in sages_pick[k]]
 pd.DataFrame(sel).to_csv(os.path.join(OUT, "Fig3_frame_provenance.csv"), index=False)
 
-# ---- 3. Fig. 9 trajectories + disagreement
+# 3. Fig. 9 trajectories + disagreement
 g = L[L.video == 196].sort_values("frame").reset_index(drop=True)
 t = (g.frame - g.frame.min()) / 25.0  # seconds (25 fps)
 fig = plt.figure(figsize=(190 * MM, 150 * MM))
@@ -158,7 +156,6 @@ for idx_f in (27400, 35025):
                  arrowprops=dict(arrowstyle="-", lw=0.6, color="#000000", shrinkA=0, shrinkB=2))
 axs.set_xlim(t.min() - 3, t.max() + 3); axs.set_ylim(-0.03, 1.05); axs.set_ylabel("C1 score"); axs.set_xlabel("Time from first annotated frame (s)")
 axs.legend(loc="upper center", ncol=3, fontsize=6.3, bbox_to_anchor=(0.5, -0.235))
-from scipy.stats import rankdata
 def auc(y, s):
     r = rankdata(s); n1 = y.sum(); n0 = len(y) - n1
     return (r[y == 1].sum() - n1 * (n1 + 1) / 2) / (n1 * n0)

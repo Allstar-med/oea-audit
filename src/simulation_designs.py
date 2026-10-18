@@ -1,11 +1,6 @@
-"""Experiment C: coverage of unit-level percentile bootstrap intervals for W and E2 when the test-set design
-(unit sizes and label sequences) is resampled from the real Endoscapes or SAGES 2024 test sets.
-Each replicate draws U units with replacement from the real designs (keeping each unit's frame labels),
-generates scores s = delta_u * y + b_u + e with delta_u ~ N(0.8, 0.4^2), b_u ~ N(0, 1), e ~ N(0, 1),
-and computes W and E2 with B unit-level bootstrap resamples. Because E[A_u | delta_u] = Phi(delta_u / sqrt(2))
-and delta_u is independent of the design, the population W and E2 both equal E[Phi(delta / sqrt(2))].
-A Student-t interval for W (bootstrap standard error, n_eff - 1 degrees of freedom) is evaluated alongside.
-python simulation_design.py <data_dir> <out_dir> [replicates] [B]"""
+"""Coverage of unit-bootstrap intervals for W and E2 on test-set designs resampled from Endoscapes and SAGES 2024.
+Scores: s = delta_u * y + b_u + e, delta_u ~ N(0.8, 0.4^2), b_u ~ N(0, 1), e ~ N(0, 1); population W = E2 = E[Phi(delta_u / sqrt 2)].
+Usage: python simulation_designs.py DATA_DIR OUT_DIR [REPLICATES] [B]"""
 import sys, os
 import numpy as np, pandas as pd
 from scipy.stats import norm, rankdata, t as tdist

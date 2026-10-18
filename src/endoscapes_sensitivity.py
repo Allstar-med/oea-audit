@@ -1,7 +1,6 @@
-"""Endoscapes sensitivity analyses on the original checkpoints (point estimates only):
-(1) each annotator's ratings as the reference standard; (2) leave-one-operation-out influence on W - E1;
-(3) bounds and an independence reference for the within-operation ranking-disagreement fraction (seeds 17 vs 29).
-python endoscapes_sensitivity.py <data_dir> <out_dir>"""
+"""Endoscapes, original checkpoints: single-annotator reference standards, leave-one-operation-out W - E1,
+and reference values for the ranking-disagreement fraction (seeds 17 and 29).
+Usage: python endoscapes_sensitivity.py DATA_DIR OUT_DIR"""
 import sys, os, ast
 import numpy as np, pandas as pd
 from scipy.stats import rankdata

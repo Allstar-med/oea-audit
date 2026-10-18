@@ -1,4 +1,4 @@
-"""Table 7 (reference-anchored within-unit AUROC). python make_t7.py <reference_anchored.csv> <table_dir>"""
+"""Table 7. Usage: python table7.py BASELINE_CONTRAST_CSV TABLE_DIR"""
 import sys
 from decimal import Decimal, ROUND_HALF_UP
 import pandas as pd

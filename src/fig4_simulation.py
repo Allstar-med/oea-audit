@@ -1,10 +1,10 @@
-"""Fig. 3 and summary tables for the simulation study. python make_sim_figure.py <sim_dir> <fig_dir> <table_dir>"""
+"""Fig. 4 and the simulation summary tables.
+Usage: python fig4_simulation.py SIM_DIR FIG_DIR TABLE_DIR"""
 import sys, json
 import numpy as np, pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 
 SIM, FIG, TAB = sys.argv[1:4]
 MM = 1 / 25.4
@@ -60,7 +60,7 @@ ax.set_ylim(0, 1.0); ax.set_xticks(range(4)); ax.set_xticklabels(lab)
 ax.set_ylabel("Coverage of nominal 95% interval")
 ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=6, handlelength=1.0, columnspacing=0.8)
 ax.text(-0.17, 1.10, "(b)", transform=ax.transAxes, fontsize=8, fontweight="bold")
-# (c) experiment C: coverage by effective number of units (designs resampled from the real test sets)
+# (c) coverage by effective number of units
 ax = axs[2]
 bn = pd.read_csv(f"{SIM}/sim_C_by_neff.csv"); bn = bn[bn.reps >= 100].reset_index(drop=True)
 xc = np.arange(len(bn))

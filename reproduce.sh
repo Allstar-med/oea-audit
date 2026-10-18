@@ -1,39 +1,34 @@
 #!/usr/bin/env bash
-# Reproduces every number, table and figure of the paper from the files in data/.
-# Run from the repository root:  bash reproduce.sh
-# Runtime on a 2-core CPU: about 15–20 minutes (the bootstrap and simulation steps dominate).
+# Recompute all results, tables and figures from data/. Run from the repository root.
+# Takes about 15 minutes on a laptop CPU.
 set -euo pipefail
 mkdir -p results/reanalysis results/simulation results/tables figures
 
-echo "[1/6] Estimands, 10,000-replicate cluster bootstrap and paired model comparisons (Endoscapes, SAGES)"
-python src/independent_v2.py data results/reanalysis
-
-echo "[2/6] SAGES sensitivity: countries as the resampling unit"
+echo "estimands and bootstrap"
+python src/estimands_bootstrap.py data results/reanalysis
 python src/country_bootstrap.py data results/reanalysis/country_bootstrap_W_minus_E1.csv
+python src/pvalue_streams.py data results/reanalysis/mc_pvalue_check_C2.csv
 
-echo "[3/6] Monte Carlo variability of bootstrap p-values (SAGES C2)"
-python src/mc_pvalue_check.py data results/reanalysis/mc_pvalue_check_C2.csv
-
-echo "[4/6] Simulation study"
-python src/simulation.py results/simulation
-python src/simulation_design.py data results/simulation 2000 1000
-
-echo "[4b] Endoscapes sensitivity analyses (annotators, leave-one-operation-out, disagreement reference)"
+echo "Endoscapes sensitivity analyses and time baseline"
 python src/endoscapes_sensitivity.py data results/reanalysis
-python src/time_baseline.py data results/reanalysis/time_baseline.csv
-python src/reference_anchored.py data results/reanalysis 10000
+python src/baseline_estimands.py data results/reanalysis/time_baseline.csv
+python src/baseline_contrast.py data results/reanalysis 10000
 
-echo "[5/6] Figures"
-python src/make_image_figs.py data/figure_frames/endoscapes data/figure_frames/sages data/endoscapes/endoscapes_test_linkage.csv \
-       data/sages/sages_labels.csv data/frozen/Tables/Pair_disagreement.csv figures
-python src/make_feature_figs.py data/frozen figures
-python src/make_fig1.py data results/reanalysis/reference_anchored.csv figures
-python src/make_figures.py data/frozen figures results/reanalysis/endoscapes_annotator_sensitivity.csv
-python src/make_sim_figure.py results/simulation figures results/tables
-python src/make_graphical_abstract.py data/frozen data/sages/results figures data/endoscapes/Endoscapes_10000_paired_contrast_CI.csv
+echo "simulations"
+python src/simulation.py results/simulation
+python src/simulation_designs.py data results/simulation 2000 1000
 
-echo "[6/6] Results tables and Figs. 6-7"
-python src/make_tables.py data/frozen results/tables
-python src/make_t7.py results/reanalysis/reference_anchored.csv results/tables
-python src/make_v3_results.py data results/reanalysis figures results/tables
-echo "Done. Outputs are in results/ and figures/."
+echo "tables"
+python src/tables.py data/frozen results/tables
+python src/table7.py results/reanalysis/baseline_contrast.csv results/tables
+
+echo "figures"
+python src/fig3_fig9.py data/figure_frames/endoscapes data/figure_frames/sages data/endoscapes/endoscapes_test_linkage.csv \
+    data/sages/sages_labels.csv data/frozen/Tables/Pair_disagreement.csv figures
+python src/fig1_overview.py data results/reanalysis/baseline_contrast.csv figures
+python src/fig2_framework.py figures
+python src/fig4_simulation.py results/simulation figures results/tables
+python src/fig5_fig8.py data/frozen figures results/reanalysis/endoscapes_annotator_sensitivity.csv
+python src/fig6_fig7_tables.py data results/reanalysis figures results/tables
+python src/graphical_abstract.py data/frozen data/sages/results figures data/endoscapes/Endoscapes_10000_paired_contrast_CI.csv
+echo "done"

@@ -1,12 +1,10 @@
-"""Fig. 1: from the clinical question to the scientific endpoint, on real data.
-python make_fig1.py <data_dir> <reference_anchored.csv> <out_dir>
-<data_dir> is the repository data directory (endoscapes/, sages/, frozen/, figure_frames/)."""
+"""Fig. 1. Usage: python fig1_overview.py DATA_DIR BASELINE_CONTRAST_CSV OUT_DIR"""
 import sys, os
 import numpy as np, pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, FancyBboxPatch, FancyArrowPatch, ConnectionPatch
+from matplotlib.patches import Rectangle, FancyBboxPatch, FancyArrowPatch
 from matplotlib.lines import Line2D
 from PIL import Image
 
@@ -18,7 +16,7 @@ plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 7, "axes.lab
                      "mathtext.fontset": "custom", "mathtext.rm": "Liberation Sans", "mathtext.it": "Liberation Sans:italic",
                      "mathtext.bf": "Liberation Sans:bold"})
 POS, NEG, WCOL, E2COL, INK = "#D55E00", "#56B4E9", "#009E73", "#CC79A7", "#222222"
-ENDO, SAG = "#3D3D3D", "#3D3D3D"
+ENDO = "#3D3D3D"
 L = pd.read_csv(f"{D}/endoscapes/endoscapes_test_linkage.csv")
 S = pd.read_csv(f"{D}/sages/sages_labels.csv"); S = S[S.primary_include == 1]
 A = pd.read_csv(f"{D}/frozen/Tables/All_18_estimates.csv")
@@ -66,7 +64,7 @@ def box(x, y, w, h, fc="#F6F7F9"):
 
 fig = plt.figure(figsize=(190 * MM, 228 * MM))
 
-# ---------------------------------------------------------------- (a) clinical question
+# (a)
 box(0.0, 0.775, 0.60, 0.222)
 letter(0.008, 0.993, "a", "Clinical question versus benchmark practice")
 g = L[L.video == 196].sort_values("frame").reset_index(drop=True)
@@ -108,7 +106,7 @@ fig.legend(handles=[Rectangle((0, 0), 1, 1, fc="white", ec=POS, lw=1.4), Rectang
            labels=["C1 positive", "C1 negative"], loc="upper right", bbox_to_anchor=(0.598, 0.997), ncol=2, fontsize=6, handlelength=1.0,
            handletextpad=0.4, columnspacing=0.8)
 
-# ---------------------------------------------------------------- (b) data structure
+# (b)
 box(0.61, 0.775, 0.39, 0.222)
 letter(0.618, 0.993, "b", "Data structure: frames nested in units")
 endo_units = [gg.sort_values("frame").y_c1.values for _, gg in L.groupby("video")]
@@ -133,7 +131,7 @@ for s_ in ax.spines.values():
 ax.set_title(f"SAGES 2024\n293 clips, 5,274 frames\nC1 mixed-label {int(el[('SAGES 2024', 'C1')])}/293; $\\alpha$ = {al[('SAGES 2024', 'C1')]:.2f}%", fontsize=6, pad=2)
 fig.text(0.625, 0.966, "each row is one unit (operation or clip)", fontsize=6, color="#444444", va="top")
 
-# ---------------------------------------------------------------- (c) method
+# (c)
 box(0.0, 0.535, 0.40, 0.232)
 letter(0.008, 0.763, "c", "Method: estimands and audit")
 ax = fig.add_axes([0.025, 0.60, 0.125, 0.12])
@@ -154,9 +152,9 @@ for k, (s, c) in enumerate(lines):
 fig.text(tx, 0.632, "$E_1=\\alpha W+(1-\\alpha)X$", fontsize=8.5, va="center")
 fig.text(tx, 0.606, "$\\Delta W=W(\\mathrm{model})-W(\\mathrm{time\\ baseline})$", fontsize=7.2, va="center")
 fig.text(tx, 0.582, "unit-level bootstrap, matched across models;\n$t$ interval with $n_{\\mathrm{eff}}-1$ df for $W$", fontsize=6, va="center", color="#444444")
-fig.text(0.02, 0.548, "green: within-unit pairs; grey: cross-unit pairs. Only $W$ and $E_2$ are\ninvariant to unit-specific score shifts (Proposition 2).", fontsize=6, color="#444444")
+fig.text(0.02, 0.548, "green: within-unit pairs; grey: cross-unit pairs. Only $W$ and $E_2$ are\ninvariant to unit-specific monotone transformations (Proposition 2).", fontsize=6, color="#444444")
 
-# ---------------------------------------------------------------- (d) real case
+# (d)
 box(0.41, 0.535, 0.59, 0.232)
 letter(0.418, 0.763, "d", "Real case: four Endoscapes test frames for C1")
 PR = {"N1": (196, 27400), "N2": (196, 35025), "P1": (192, 23825), "P2": (192, 24575)}
@@ -175,7 +173,7 @@ fig.text(0.725 + 0.135, 0.742, "operation 192: positive frames only", ha="center
 fig.text(0.425, 0.588, "The four positive–negative pairs (P1–N1, P1–N2, P2–N1, P2–N2) are cross-operation pairs:\nthey count in $E_1$ and $X$ but not in $W$.", fontsize=6, color=INK, va="top")
 fig.text(0.425, 0.560, "Seed 17 ordered all four incorrectly and seed 29 all four correctly, although within\noperation 196 the two models ranked frames almost equally well (AUROC 0.80 and 0.81).", fontsize=6, color=INK, va="top")
 
-# ---------------------------------------------------------------- (e) finding: Endoscapes
+# (e)
 y0, h0 = 0.128, 0.335
 box(0.0, 0.07, 0.325, 0.457)
 letter(0.008, 0.522, "e", "Pooled and within-unit AUROC differ")
@@ -197,7 +195,7 @@ ax.legend(handles=[Line2D([], [], marker="o", ls="", color=INK, ms=3.4), Line2D(
 fig.text(0.015, 0.497, "Endoscapes, original checkpoints", fontsize=6.3, color="#444444", va="top")
 fig.text(0.015, 0.078, "$\\alpha$ = 2.75–2.97%; $W-E_1$ from −0.074 to +0.126", fontsize=6, color="#444444")
 
-# ---------------------------------------------------------------- (f) transfer: SAGES
+# (f)
 box(0.335, 0.07, 0.325, 0.457)
 letter(0.343, 0.522, "f", "Transfer to a second dataset")
 fig.text(0.35, 0.497, "Retrained checkpoints: SAGES 2024 and Endoscapes", fontsize=6.3, color="#444444", va="top")
@@ -220,14 +218,14 @@ ax.legend(handles=[Line2D([], [], marker="o", ls="-", color=WCOL, ms=3.2, lw=0.9
           labels=["SAGES, 95% CI", "Endoscapes"], loc="lower center", bbox_to_anchor=(0.45, 1.005), ncol=2, fontsize=6, handletextpad=0.3)
 fig.text(0.35, 0.078, "$\\alpha$ = 0.17–0.19%; open: CI includes 0; sign agreed in 7 of 9", fontsize=6, color="#444444")
 
-# ---------------------------------------------------------------- (g) endpoint
+# (g)
 box(0.67, 0.07, 0.33, 0.457)
 letter(0.678, 0.522, "g", "Within-unit AUROC versus elapsed time")
 fig.text(0.685, 0.497, "$\\Delta W$ = $W$(model) − $W$(time within recording),\n95% $t$ interval from matched unit resamples", fontsize=6.3, color="#444444", va="top")
 ax = fig.add_axes([0.765, y0, 0.22, h0])
 yy = 0; yt, yl = [], []
 for c in crit:
-    for ds, off in (("Endoscapes", 0.17), ("SAGES 2024", -0.17)):
+    for ds in ("Endoscapes", "SAGES 2024"):
         for s in seeds:
             r = R[(R.dataset == ds) & (R.criterion == c) & (R.seed == s)].iloc[0]
             exc = r.dW_tlo > 0 or r.dW_thi < 0
@@ -244,7 +242,7 @@ ax.text(0.02, 1.01, "\u2190 worse than time", transform=ax.transAxes, fontsize=6
 ax.text(0.98, 1.01, "better \u2192", transform=ax.transAxes, fontsize=6, color="#444444", va="bottom", ha="right")
 fig.text(0.685, 0.078, "diamonds Endoscapes, circles SAGES; open: includes 0", fontsize=6, color="#444444")
 
-# ---------------------------------------------------------------- (h) evidence chain
+# (h)
 box(0.0, 0.0, 1.0, 0.062, fc="#FFFFFF")
 letter(0.008, 0.058, "h", "Evidence chain")
 steps = ["SHA-256 match for 1,663/1,663\nimages and 1,000/1,000 videos",

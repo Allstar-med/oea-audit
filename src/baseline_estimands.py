@@ -1,6 +1,5 @@
-"""Reference score equal to the time of a frame within its recording (Endoscapes: frames since the first annotated frame of the operation; SAGES: time within the clip).
-Reports E1, X, W, E2 for this score with the primary reference labels and analysis sets.
-python time_baseline.py <data_dir> <out_csv>"""
+"""E1, X, W and E2 of a score equal to the elapsed time of each frame within its recording.
+Usage: python baseline_estimands.py DATA_DIR OUT_CSV"""
 import sys
 import numpy as np, pandas as pd
 from scipy.stats import rankdata

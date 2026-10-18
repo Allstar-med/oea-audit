@@ -1,19 +1,15 @@
 {
  "frozen_at": "2026-10-16 22:43:21 +0800",
- "git_commit": "c46e1468f29872b72da238fd2d499ed03f2c7b98",
- "route": "B (original weights not recoverable)",
- "paper_wording": "source-only retrained models (Endoscapes2023 train, checkpoint selected on Endoscapes2023 validation); not direct transfer of the original frozen models",
  "known_differences_from_historical_runs": [
   "historical runs trained on CPU (torch threads=7); these were trained on CUDA (RTX 4060 Laptop) with cudnn.deterministic=True",
-  "the script that generated the historical locked-test predictions was not recovered; configuration was reconstructed from Evidence/Locked_Test/seed*/epochs.jsonl and the sibling executable script Evidence/Scripts/endoscapes_paired_deep_full.py",
-  "row-level agreement with the historical 1663-frame predictions is therefore NOT expected (route A criterion |diff|<=1e-5 does not apply); comparison below is descriptive only"
+  "the script that generated the historical locked-test predictions was not recovered; the configuration was reconstructed from the archived per-epoch training logs and the training script",
+  "row-level agreement with the historical 1663-frame predictions is therefore not expected; the comparison below is descriptive only"
  ],
  "models": [
   {
    "model_id": "endoscapes_srconly_resnet18_160_seed17_v1",
-   "provenance": "source-only retrained model (task book route B); NOT the original historical Endoscapes ResNet-18 weights, which were not recoverable on this machine",
+   "provenance": "retrained on Endoscapes only; not the original Endoscapes ResNet-18 weights",
    "seed": 17,
-   "checkpoint_path": "<local path removed>",
    "checkpoint_sha256": "b98159cd5050a2743a7cc906b42f6bd8d139236301392018728ba2a6febdec1c",
    "output_class_order": [
     "C1",
@@ -25,7 +21,6 @@
    "training": {
     "data": "Endoscapes2023 public release (s3.unistra.fr camma_public/datasets/endoscapes/endoscapes.zip)",
     "endoscapes_zip_sha256": "0574b11a82779a1a0a783e2083627b1140de096e8b7172903e35afb583d75862",
-    "sample_manifest": "<local path removed>",
     "sample_manifest_sha256": "7ea364ebe54933eb9685ed505adbf50a43e81a445af1164e2edd6247009b046f",
     "split_sizes": {
      "train": 6808,
@@ -136,9 +131,8 @@
   },
   {
    "model_id": "endoscapes_srconly_resnet18_160_seed29_v1",
-   "provenance": "source-only retrained model (task book route B); NOT the original historical Endoscapes ResNet-18 weights, which were not recoverable on this machine",
+   "provenance": "retrained on Endoscapes only; not the original Endoscapes ResNet-18 weights",
    "seed": 29,
-   "checkpoint_path": "<local path removed>",
    "checkpoint_sha256": "21150d77357c53b26e03c8d0d99f7db3c8e28e3c134eb73bf35b50acaf35a388",
    "output_class_order": [
     "C1",
@@ -150,7 +144,6 @@
    "training": {
     "data": "Endoscapes2023 public release (s3.unistra.fr camma_public/datasets/endoscapes/endoscapes.zip)",
     "endoscapes_zip_sha256": "0574b11a82779a1a0a783e2083627b1140de096e8b7172903e35afb583d75862",
-    "sample_manifest": "<local path removed>",
     "sample_manifest_sha256": "7ea364ebe54933eb9685ed505adbf50a43e81a445af1164e2edd6247009b046f",
     "split_sizes": {
      "train": 6808,
@@ -261,9 +254,8 @@
   },
   {
    "model_id": "endoscapes_srconly_resnet18_160_seed43_v1",
-   "provenance": "source-only retrained model (task book route B); NOT the original historical Endoscapes ResNet-18 weights, which were not recoverable on this machine",
+   "provenance": "retrained on Endoscapes only; not the original Endoscapes ResNet-18 weights",
    "seed": 43,
-   "checkpoint_path": "<local path removed>",
    "checkpoint_sha256": "ef8ac6c333340ad14badf91138b7ebdf12d828bc77213e708b7508660715048b",
    "output_class_order": [
     "C1",
@@ -275,7 +267,6 @@
    "training": {
     "data": "Endoscapes2023 public release (s3.unistra.fr camma_public/datasets/endoscapes/endoscapes.zip)",
     "endoscapes_zip_sha256": "0574b11a82779a1a0a783e2083627b1140de096e8b7172903e35afb583d75862",
-    "sample_manifest": "<local path removed>",
     "sample_manifest_sha256": "7ea364ebe54933eb9685ed505adbf50a43e81a445af1164e2edd6247009b046f",
     "split_sizes": {
      "train": 6808,

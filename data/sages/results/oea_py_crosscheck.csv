@@ -1,0 +1,10 @@
+criterion,model_id,absdiff_E1,absdiff_E2,absdiff_W,absdiff_X,absdiff_alpha,pass_1e-10
+C1,endoscapes_srconly_resnet18_160_seed17_v1,0.0,0.0,0.0,0.0,0.0,True
+C1,endoscapes_srconly_resnet18_160_seed29_v1,0.0,0.0,0.0,0.0,0.0,True
+C1,endoscapes_srconly_resnet18_160_seed43_v1,0.0,0.0,0.0,0.0,0.0,True
+C2,endoscapes_srconly_resnet18_160_seed17_v1,0.0,0.0,0.0,0.0,0.0,True
+C2,endoscapes_srconly_resnet18_160_seed29_v1,0.0,0.0,0.0,0.0,0.0,True
+C2,endoscapes_srconly_resnet18_160_seed43_v1,0.0,0.0,0.0,0.0,0.0,True
+C3,endoscapes_srconly_resnet18_160_seed17_v1,0.0,0.0,0.0,0.0,0.0,True
+C3,endoscapes_srconly_resnet18_160_seed29_v1,0.0,0.0,0.0,0.0,0.0,True
+C3,endoscapes_srconly_resnet18_160_seed43_v1,0.0,0.0,0.0,0.0,0.0,True

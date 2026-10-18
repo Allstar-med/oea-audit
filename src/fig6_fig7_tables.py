@@ -1,5 +1,5 @@
-"""Fig. 6 (contrasts with CIs, both datasets, same-checkpoint comparison), Fig. 7 (model comparisons) and Tables 5, 6, S3, S4.
-python make_v3_results.py <data_dir> <reanalysis_dir> <fig_dir> <table_dir>"""
+"""Fig. 6, Fig. 7 and Tables 5, 6 and the comparison and country supplementary tables.
+Usage: python fig6_fig7_tables.py DATA_DIR REANALYSIS_DIR FIG_DIR TABLE_DIR"""
 import sys
 import numpy as np, pandas as pd
 import matplotlib
@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from decimal import Decimal, ROUND_HALF_UP
 
-DATA, V2, FG, TB = sys.argv[1:5]
+DATA, RES, FG, TB = sys.argv[1:5]
 MM = 1 / 25.4
 plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 7, "axes.labelsize": 7, "xtick.labelsize": 6.5, "ytick.labelsize": 6.5,
                      "legend.fontsize": 6.3, "axes.linewidth": 0.6, "axes.spines.top": False, "axes.spines.right": False, "pdf.fonttype": 42,
@@ -31,15 +31,15 @@ def pipe(df, al):
     return "\n".join(["| " + " | ".join(df.columns) + " |", "| " + " | ".join(sep) + " |"] + ["| " + " | ".join(str(x) for x in r) + " |" for r in df.values])
 
 
-# ---------------- data
+# data
 E = pd.read_csv(f"{DATA}/endoscapes/Endoscapes_10000_operation_bootstrap_CI.csv"); E["criterion"] = E.criterion.str.upper()
 EC = pd.read_csv(f"{DATA}/endoscapes/Endoscapes_10000_paired_contrast_CI.csv"); EC["criterion"] = EC.criterion.str.upper()
 S = pd.read_csv(f"{DATA}/frozen/Tables/SAGES_10000_bootstrap.csv"); S["criterion"] = S.criterion.str.upper(); S["seed"] = S.model.str.extract(r"seed(\d+)").astype(int)
 ST = pd.read_csv(f"{DATA}/sages/results/source_test_estimands.csv")
-IC = pd.read_csv(f"{V2}/independent_model_comparisons.csv")
+IC = pd.read_csv(f"{RES}/model_comparisons.csv")
 MC = pd.read_csv(f"{DATA}/sages/results/model_comparisons.csv"); MC = MC[MC.analysis == "primary"].copy()
 MC["a"] = MC.model_a.str.extract(r"seed(\d+)").astype(int); MC["b"] = MC.model_b.str.extract(r"seed(\d+)").astype(int)
-CB = pd.read_csv(f"{V2}/country_bootstrap_W_minus_E1.csv"); CB["seed"] = CB.model.str.extract(r"seed(\d+)").astype(int)
+CB = pd.read_csv(f"{RES}/country_bootstrap_W_minus_E1.csv"); CB["seed"] = CB.model.str.extract(r"seed(\d+)").astype(int)
 crit = ["C1", "C2", "C3"]; seeds = [17, 29, 43]
 
 
@@ -51,7 +51,7 @@ def endoc(c, s, con):
     r = EC[(EC.criterion == c) & (EC.seed == s) & (EC.contrast == con)].iloc[0]; return r.point, r.ci_low, r.ci_high
 
 
-# ---------------- Table 5: both datasets with CIs
+# Table 5: both datasets with CIs
 rows = []
 for ds in ("Endoscapes", "SAGES"):
     for c in crit:
@@ -67,7 +67,7 @@ for ds in ("Endoscapes", "SAGES"):
 T5 = pd.DataFrame(rows, columns=["Data", "Crit.", "Seed", "$E_1$ [95% CI]", "$W$ [95% CI]", "$W-E_1$ [95% CI]", "$E_2-E_1$ [95% CI]"])
 open(f"{TB}/T5.md", "w").write(pipe(T5, ["l", "l", "r"] + ["r"] * 4) + "\n")
 
-# ---------------- Table 6: same checkpoints on both datasets
+# Table 6: same checkpoints on both datasets
 rows = []
 for c in crit:
     for s in seeds:
@@ -80,7 +80,7 @@ T6 = pd.DataFrame(rows, columns=["Crit.", "Seed", "Endo. $E_1$ [95% CI]", "Endo.
 open(f"{TB}/T6.md", "w").write(pipe(T6, ["l", "r"] + ["r"] * 6) + "\n")
 agree = (T6["Same sign"] == "yes").sum(); print("same-sign", agree)
 
-# ---------------- Table S3: model comparisons both datasets
+# supplementary table: model comparisons, both datasets
 rows = []
 for est in ("E1", "W", "E2"):
     for c in crit:
@@ -94,7 +94,7 @@ for est in ("E1", "W", "E2"):
                          h(j.p_two_sided, 4), h(j.q_BH, 4)])
 S3 = pd.DataFrame(rows)
 ta = S3[[0, 1, 2, 3, 4, 5]].copy(); ta.columns = ["Estimand", "Crit.", "Seeds", "Difference [95% CI]", "$p$", "$q$"]
-tb = S3[[0, 1, 2, 6, 7, 8, 9, 10]].copy(); tb.columns = ["Estimand", "Crit.", "Seeds", "Difference [95% CI]", "$p$", "$q$", "$p$ (2nd impl.)", "$q$ (2nd impl.)"]
+tb = S3[[0, 1, 2, 6, 7, 8, 9, 10]].copy(); tb.columns = ["Estimand", "Crit.", "Seeds", "Difference [95% CI]", "$p$", "$q$", "$p$ (recomputed)", "$q$ (recomputed)"]
 open(f"{TB}/S1.md", "w").write("*(a) Endoscapes*\n\n" + pipe(ta, ["l", "l", "l", "r", "r", "r"]) + "\n\n*(b) SAGES 2024*\n\n" + pipe(tb, ["l", "l", "l", "r", "r", "r", "r", "r"]) + "\n")
 # summary numbers
 endo_sig = IC[(IC.dataset == "Endoscapes") & (IC.q_BH < 0.05)]
@@ -102,7 +102,7 @@ print("Endoscapes BH sig:\n", endo_sig[["criterion", "estimand", "model_a", "mod
 print("Endoscapes unadjusted CI excl 0:", ((IC.dataset == "Endoscapes") & ((IC.ci_lo > 0) | (IC.ci_hi < 0))).sum())
 print("SAGES replication BH sig:", IC[(IC.dataset == "SAGES 2024") & (IC.q_BH < 0.05)][["criterion", "estimand", "model_a", "model_b", "q_BH"]].round(4).to_string())
 
-# ---------------- Table S6: country sensitivity
+# supplementary table: country-level resampling
 rows = []
 for c in crit:
     for s in seeds:
@@ -112,7 +112,7 @@ S6 = pd.DataFrame(rows, columns=["Criterion", "Seed", "$W-E_1$", "95% CI, clips 
 open(f"{TB}/S6.md", "w").write(pipe(S6, ["l", "r", "r", "r", "r"]) + "\n")
 
 
-# ---------------- Fig. 6
+# Fig. 6
 UMINUS = matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:.2f}".replace("-", "\u2212") if abs(v) > 1e-9 else "0.00")
 def save(fig, name):
     for ext in ("pdf", "png", "tif"):
@@ -162,7 +162,7 @@ axs[2].legend(handles=[Line2D([], [], marker="D", ls="", color="#444444", ms=3),
               labels=["Endoscapes (point)", "SAGES (95% CI)"], loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2)
 save(fig, "Fig6_estimates_contrasts")
 
-# ---------------- Fig. 7
+# Fig. 7
 QL = []
 fig, axs = plt.subplots(2, 3, figsize=(190 * MM, 110 * MM), sharey=True, sharex=True, gridspec_kw=dict(wspace=0.08, hspace=0.42))
 pairs = [(17, 29), (17, 43), (29, 43)]

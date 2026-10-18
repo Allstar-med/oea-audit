@@ -1,8 +1,7 @@
-"""Sensitivity: SAGES W-E1 with countries (not clips) as the resampling unit; estimands still defined per clip.
-python country_bootstrap.py <data_dir> <out_csv>"""
+"""SAGES: W - E1 with countries as the resampling unit (W still defined per clip).
+Usage: python country_bootstrap.py DATA_DIR OUT_CSV"""
 import sys
 import numpy as np, pandas as pd
-from scipy.stats import rankdata
 SRC, OUT = sys.argv[1], sys.argv[2]
 L = pd.read_csv(f"{SRC}/sages/sages_labels.csv"); L = L[L.primary_include == 1]
 Pr = pd.read_csv(f"{SRC}/sages/sages_predictions.csv")
@@ -19,7 +18,7 @@ def wauc(y, s, w):
     return ((np.cumsum(ng) - ng + 0.5 * ng) * pg).sum() / (P * Q)
 
 
-rng = np.random.default_rng(99001); B = 10000
+B = 10000
 rows = []
 for c in ("c1", "c2", "c3"):
     for m, g in d.groupby("model_id"):

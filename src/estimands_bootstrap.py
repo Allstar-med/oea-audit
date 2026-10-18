@@ -1,5 +1,5 @@
-"""Independent re-analysis of the row-level files (second implementation, own RNG streams).
-python independent_v2.py <data_dir> <out_dir>"""
+"""Estimands, 10,000-replicate unit bootstrap and paired model comparisons for both test sets.
+Usage: python estimands_bootstrap.py DATA_DIR OUT_DIR"""
 import sys, json
 import numpy as np, pandas as pd
 sys.path.insert(0, __file__.rsplit('/', 1)[0])
@@ -7,7 +7,7 @@ import oea_audit as o
 SRC, OUT = sys.argv[1], sys.argv[2]
 B = 10000
 rows = []; comps = []
-# ---------------- Endoscapes (historical checkpoints)
+# Endoscapes (original checkpoints)
 D = {s: pd.read_csv(f"{SRC}/endoscapes/locked_test_predictions_seed{s}.csv").sort_values(["video", "frame"]).reset_index(drop=True) for s in (17, 29, 43)}
 for s in (29, 43):
     assert D[17][["video", "frame"]].equals(D[s][["video", "frame"]])
@@ -19,7 +19,7 @@ for k, c in enumerate(("c1", "c2", "c3")):
     est, cmp = o.run(df, "video", "y", "score", "model", B, 7700 + k)
     rows.append(est.assign(dataset="Endoscapes", criterion=c.upper())); comps.append(cmp.assign(dataset="Endoscapes", criterion=c.upper()))
     print("endo", c, flush=True)
-# ---------------- SAGES (retrained source-only checkpoints)
+# SAGES (retrained checkpoints)
 L = pd.read_csv(f"{SRC}/sages/sages_labels.csv"); Pr = pd.read_csv(f"{SRC}/sages/sages_predictions.csv")
 L = L[L.primary_include == 1]
 d = L.merge(Pr, on=["dataset_version", "split", "operation_or_video_id", "clip_id", "frame_id"], validate="one_to_many")
@@ -34,6 +34,6 @@ for k, c in enumerate(("c1", "c2", "c3")):
 R = pd.concat(rows); Cm = pd.concat(comps)
 # BH within dataset x estimand family (9 comparisons each)
 Cm["q_BH"] = Cm.groupby(["dataset", "estimand"]).p_two_sided.transform(o.bh)
-R.to_csv(f"{OUT}/independent_estimands_ci.csv", index=False); Cm.to_csv(f"{OUT}/independent_model_comparisons.csv", index=False)
-json.dump(info, open(f"{OUT}/independent_info.json", "w"), indent=1)
+R.to_csv(f"{OUT}/estimands_ci.csv", index=False); Cm.to_csv(f"{OUT}/model_comparisons.csv", index=False)
+json.dump(info, open(f"{OUT}/estimands_info.json", "w"), indent=1)
 print(json.dumps(info))

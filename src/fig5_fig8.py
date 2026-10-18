@@ -1,12 +1,11 @@
 """Fig. 5 (pair composition) and Fig. 8 (reference-standard sensitivity).
-python make_figures.py <frozen_dir> <out_dir> <endoscapes_annotator_sensitivity.csv>"""
+Usage: python fig5_fig8.py FROZEN_DIR OUT_DIR ENDOSCAPES_ANNOTATOR_CSV"""
 import sys, os
 import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 
 ROOT, OUT = sys.argv[1], sys.argv[2]
 MM = 1 / 25.4
@@ -52,7 +51,7 @@ for d, off in (("Endoscapes", -0.12), ("SAGES 2024", 0.12)):
     v = [al[(d, c)] * 100 for c in crit]
     ax.plot(x + off, v, "D" if d == "Endoscapes" else "o", color="#3D3D3D" if d == "Endoscapes" else "#8C8C8C", ms=4.5, label=d)
     for xi, vi in zip(x + off, v):
-        ax.text(xi + 0.07, vi, f"{vi:.2f}", va="center", fontsize=6)
+        ax.text(xi + 0.11, vi, f"{vi:.2f}", va="center", fontsize=6)
 ax.set_yscale("log"); ax.set_ylim(0.05, 10); ax.set_xlim(-0.5, 2.6); ax.set_xticks(x); ax.set_xticklabels(crit)
 ax.set_ylabel("Within-unit pairs, $\\alpha$ (%)")
 ax.set_yticks([0.1, 1, 10]); ax.set_yticklabels(["0.1", "1", "10"])

@@ -1,5 +1,5 @@
-"""Monte Carlo variability of bootstrap p-values for the SAGES C2 model comparisons (three further random streams).
-python mc_pvalue_check.py <data_dir> <out_csv>"""
+"""SAGES C2 model comparisons rerun with three further random streams.
+Usage: python pvalue_streams.py DATA_DIR OUT_CSV"""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pandas as pd

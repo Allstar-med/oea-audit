@@ -1,14 +1,13 @@
-"""Fig. 2 (audit framework). python make_feature_figs.py <root> <out>"""
+"""Fig. 2. Usage: python fig2_framework.py OUT_DIR (run fig3_fig9.py first; it writes OUT_DIR/frames)"""
 import sys, os
-import numpy as np, pandas as pd
+import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle, FancyBboxPatch, FancyArrowPatch, ConnectionPatch
-from matplotlib.lines import Line2D
+from matplotlib.patches import Rectangle, FancyBboxPatch, FancyArrowPatch
 from PIL import Image
 
-ROOT, OUT = sys.argv[1], sys.argv[2]
+OUT = sys.argv[1]
 FR = os.path.join(OUT, "frames")
 MM = 1 / 25.4
 plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 7, "axes.labelsize": 7, "xtick.labelsize": 6.5,
@@ -18,11 +17,6 @@ plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 7, "axes.lab
                      "mathtext.bf": "Liberation Sans:bold", "mathtext.cal": "DejaVu Serif:italic"})
 C = dict(E1="#000000", X="#888888", W="#009E73", E2="#CC79A7", pos="#D55E00", neg="#56B4E9", ok="#4D4D4D", bad="#FFFFFF",
          ink="#222222", soft="#F3F5F8", edge="#C9D1DC")
-A = pd.read_csv(f"{ROOT}/Tables/All_18_estimates.csv")
-B = pd.read_csv(f"{ROOT}/Tables/SAGES_10000_bootstrap.csv"); B["criterion"] = B.criterion.str.upper()
-B["seed"] = B.model.str.extract(r"seed(\d+)").astype(int)
-PROV = pd.read_csv(f"{ROOT}/Figures/Figure1_provenance.csv")
-P = pd.read_csv(f"{ROOT}/Tables/Pair_disagreement.csv"); P["criterion"] = P.criterion.str.upper()
 
 
 def save(fig, name):
@@ -36,9 +30,6 @@ def letter(fig, x, y, L):
     fig.text(x, y, f"({L})", fontsize=8.5, fontweight="bold", ha="left", va="top")
 
 
-# =============================================================================
-# Fig. 2  audit framework
-# =============================================================================
 fig = plt.figure(figsize=(190 * MM, 118 * MM))
 letter(fig, 0.005, 0.995, "a")
 mods = [("1", "Input", "#E8F1FA"), ("2", "Pair partition", "#E8F6F1"), ("3", "Eligibility and weights", "#FDF3E3"),
@@ -114,7 +105,7 @@ axh.axvline(lo, color="#333333", lw=0.7); axh.axvline(hi, color="#333333", lw=0.
 axh.text(lo, axh.get_ylim()[1] * 1.02, "2.5%", ha="center", va="bottom", fontsize=6)
 axh.text(hi, axh.get_ylim()[1] * 1.02, "97.5%", ha="center", va="bottom", fontsize=6)
 axh.set_yticks([]); axh.set_xticks([]); axh.spines["left"].set_visible(False)
-fig.text(xb + 0.01, yb + 0.115, "percentile 95% CI", fontsize=6)
+fig.text(xb + 0.01, yb + 0.115, "percentile CI; $t$ interval for $W$", fontsize=6)
 fig.text(xb + 0.01, yb + 0.075, "matched across models", fontsize=6)
 fig.text(xb + 0.01, yb + 0.035, "paired contrasts, BH-adjusted $q$", fontsize=6)
 # module 5: report table (items of Table 2)
@@ -127,7 +118,7 @@ for i, t in enumerate(rows):
                                  fc="white" if i % 2 == 0 else "#F4F4F4", ec="#DDDDDD", lw=0.3, zorder=-5))
     fig.text(xb + 0.013, yy + 0.001, f"{i+1:>2}  {t}", fontsize=6, va="center")
 fig.text(xb + 0.01, yb + 0.012, "items of Table 2", fontsize=6, color="#333333")
-# ---------------- bottom: toy example (b)(c)(d)
+# bottom: toy example (b)(c)(d)
 units = [("Unit 1", 3, 5), ("Unit 2", 1, 6), ("Unit 3", 4, 2), ("Unit 4", 0, 5)]
 letter(fig, 0.005, 0.49, "b")
 ax = fig.add_axes([0.02, 0.03, 0.27, 0.43]); ax.set_axis_off(); ax.set_xlim(0, 10); ax.set_ylim(-0.7, 8.2)

@@ -1,26 +1,19 @@
-"""Builds the manuscript and supplementary tables (pandoc pipe tables) from the frozen CSVs."""
+"""Tables 1-4 and Tables S2-S3 as pandoc pipe tables.
+Usage: python tables.py FROZEN_DIR OUT_DIR"""
 import sys
-import numpy as np
 import pandas as pd
+from decimal import Decimal, ROUND_HALF_UP
 
 ROOT, OUT = sys.argv[1], sys.argv[2]
 A = pd.read_csv(f"{ROOT}/Tables/All_18_estimates.csv")
-B = pd.read_csv(f"{ROOT}/Tables/SAGES_10000_bootstrap.csv")
-B["criterion"] = B.criterion.str.upper(); B["seed"] = B.model.str.extract(r"seed(\d+)").astype(int)
-M = pd.read_csv(f"{ROOT}/Tables/27_model_comparisons.csv")
-M["criterion"] = M.criterion.str.upper()
-M["a"] = M.model_a.str.extract(r"seed(\d+)").astype(int); M["b"] = M.model_b.str.extract(r"seed(\d+)").astype(int)
 R = pd.read_csv(f"{ROOT}/Tables/Rater_sensitivity.csv")
 R["criterion"] = R.criterion.str.upper(); R["seed"] = R.model.str.extract(r"seed(\d+)").astype(int)
 P = pd.read_csv(f"{ROOT}/Tables/Pair_disagreement.csv"); P["criterion"] = P.criterion.str.upper()
 
-from decimal import Decimal, ROUND_HALF_UP
 def h(v, n=3):
     return str(Decimal(repr(float(v))).quantize(Decimal(10) ** -n, rounding=ROUND_HALF_UP))
 f3 = lambda v: h(v)
 sg = lambda v: "0.000" if f"{abs(v):.3f}" == "0.000" else ("+" if v >= 0 else "−") + f"{abs(v):.3f}"
-ci = lambda lo, hi: f"[{sg(lo)}, {sg(hi)}]"
-ci_plain = lambda lo, hi: f"[{h(lo)}, {h(hi)}]"
 
 
 def pipe(df, align=None):
@@ -76,24 +69,6 @@ for _, r in A.iterrows():
 T["T4"] = pipe(pd.DataFrame(rows, columns=["Dataset", "Criterion", "Seed", "$E_1$", "$X$", "$W$", "$E_2$", "$\\alpha$ (%)",
                                            "Mixed units", "$W-E_1$", "$E_2-E_1$"]), ["l", "l", "r"] + ["r"] * 8)
 
-rows = []
-for _, r in B.iterrows():
-    rows.append([r.criterion, int(r.seed), f"{h(r.E1)} {ci_plain(r.E1_lo, r.E1_hi)}", f"{h(r.W)} {ci_plain(r.W_lo, r.W_hi)}",
-                 f"{h(r.E2)} {ci_plain(r.E2_lo, r.E2_hi)}", f"{sg(r.W_minus_E1)} {ci(r.W_minus_E1_lo, r.W_minus_E1_hi)}",
-                 f"{sg(r.E2_minus_E1)} {ci(r.E2_minus_E1_lo, r.E2_minus_E1_hi)}"])
-T["T5"] = pipe(pd.DataFrame(rows, columns=["Criterion", "Seed", "$E_1$ [95% CI]", "$W$ [95% CI]", "$E_2$ [95% CI]",
-                                           "$W-E_1$ [95% CI]", "$E_2-E_1$ [95% CI]"]), ["l", "r"] + ["r"] * 5)
-
-# Supplementary
-rows = []
-for est in ["E1", "W", "E2"]:
-    for c in ["C1", "C2", "C3"]:
-        for (x, y) in [(17, 29), (17, 43), (29, 43)]:
-            r = M[(M.estimand == est) & (M.criterion == c) & (M.a == x) & (M.b == y)].iloc[0]
-            rows.append([f"${est[0]}_{est[1]}$" if est != "W" else "$W$", c, f"{x} vs {y}", sg(r.difference), ci(r.ci_lo, r.ci_hi),
-                         h(r.p_two_sided, 4), h(r.q_BH_within_estimand, 4)])
-T["S1"] = pipe(pd.DataFrame(rows, columns=["Estimand", "Criterion", "Seeds", "Difference", "95% CI", "$p$", "$q$ (BH)"]),
-               ["l", "l", "l", "r", "r", "r", "r"])
 rows = []
 for _, r in R.sort_values(["criterion", "seed", "rater"]).iterrows():
     rows.append([r.criterion, int(r.seed), int(r.rater), f3(r.E1), f3(r.W), f3(r.E2), h(r.alpha*100, 2), int(r.estimable),

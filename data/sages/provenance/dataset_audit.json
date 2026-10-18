@@ -9,7 +9,6 @@
   },
   "license": {
     "name": "CC BY-NC 4.0",
-    "file": "LICENSE_CC_BY_NC_4.0.txt",
     "implications": "non-commercial use only; sharing and adaptation allowed with attribution and no added restrictions, so de-identified row-level labels/predictions may be shared for this non-commercial study; not usable for a commercial product",
     "commercial_research_use": "not permitted"
   },
@@ -81,16 +80,16 @@
       },
       "note": "macOS '._*' and LibreOffice '.~lock.*#' artefacts shipped in the repository; ignored"
     },
-    "visible_overlays": "at least one test clip (664a48be..., duplicate of c8063d76...) shows an on-screen date/time stamp; no images are included in the deliverables"
+    "visible_overlays": "at least one test clip (664a48be..., duplicate of c8063d76...) shows an on-screen date/time stamp"
   },
   "frame_alignment_qa": {
     "frames_compared": 54,
     "max_mad_official_vs_ours": 0.7866670283564815,
     "frames_where_neighbor_closer_than_aligned": 0,
-    "method": "official tools/preprocess_videos.py (--fps 0.2) vs this pipeline's PNG on 3 clips; aligned frame must be closer than frames i-1 and i+1"
+    "method": "official tools/preprocess_videos.py (--fps 0.2) vs the PNG frames used in this study on 3 clips; aligned frame must be closer than frames i-1 and i+1"
   },
   "deduplication": {
-    "frozen_at": "2026-10-16 21:36:04 +0800 (git c391c93), before any model training or SAGES inference",
+    "frozen_at": "2026-10-16 21:36:04 +0800, before any model training or SAGES inference",
     "rule": "same footage if video SHA256 identical, or >=5 of 90 one-per-second frames have a pHash neighbour <=4 bits in the other clip at a modal frame offset of 0, confirmed by visual side-by-side review",
     "clips": 300,
     "footage_groups": 293,
@@ -187,7 +186,7 @@
     "paper_statement": "\"1,000 laparoscopic cholecystectomy cases, each represented by a 90-second clip\" (Sec. 4.2)",
     "procedure_level_mapping": "not provided; clip treated as the case/operation unit after footage deduplication",
     "patient_independence": "not stated by the organizers; cannot be verified from released data",
-    "status": "LIMITATION: clusters are footage groups (clip level); patient-level independence unconfirmed"
+    "status": "limitation: clusters are footage groups (clip level); patient-level independence not confirmed"
   },
   "label_support": {
     "all_300_clips": {
@@ -360,9 +359,8 @@
     "visual_review": "top-6 closest pairs (Hamming 4-6) plus the 4 closest frames of the only clip whose near neighbours concentrated on one Endoscapes video (f1c28c63... -> video 122) were reviewed side by side: all show different procedures/scenes (similarity driven by the circular endoscopic vignette). No near-identical footage found.",
     "positive_control": "the same method found all 7 SAGES-internal duplicate footage groups (6 at 0-bit distance on most frames); one re-encoded/colour-altered duplicate matched only 6/90 frames at <=4 bits, so heavily altered copies can be partially missed",
     "limitations": "cannot detect same patient/procedure in a different time window, cropped or colour-graded copies, or same-centre overlap",
-    "maintainer_confirmation": "query drafted for sagescvschallenge2025@gmail.com; not yet answered",
-    "status": "no_near_identical_footage_found_by_screen; independence_NOT_confirmed_pending_maintainer",
-    "claim_allowed": "cross-dataset method transfer; do not write 'patient-independent external validation'"
+    "status": "no near-identical footage found by the screen; independence not confirmed by the dataset maintainers",
+    "interpretation": "cross-dataset transfer; patient independence not established"
   },
   "video_manifest_rows": 300
 }

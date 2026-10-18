@@ -12,6 +12,7 @@ which units are resampled intact and the same resample indices are used for ever
 model, so that paired model contrasts are available.
 """
 import argparse
+import os
 import numpy as np
 import pandas as pd
 from scipy.stats import rankdata
@@ -114,6 +115,7 @@ if __name__ == "__main__":
     ap.add_argument("--seed", type=int, default=20261010); ap.add_argument("--out", default=".")
     a = ap.parse_args()
     est, comp = run(pd.read_csv(a.csv), a.unit, a.label, a.score, a.model, a.n_boot, a.seed)
+    os.makedirs(a.out, exist_ok=True)
     est.to_csv(f"{a.out}/estimands_with_ci.csv", index=False)
     comp.to_csv(f"{a.out}/paired_model_comparisons.csv", index=False)
     print(est.round(4).to_string(index=False))

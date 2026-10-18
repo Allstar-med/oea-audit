@@ -1,10 +1,11 @@
-"""Graphical abstract (MIA minimum 1328 x 531 px). python make_graphical_abstract.py <frozen_dir> <sages_results_dir> <out_dir> <endoscapes_paired_contrast_csv>"""
+"""Graphical abstract. Usage: python graphical_abstract.py FROZEN_DIR SAGES_RESULTS_DIR OUT_DIR ENDOSCAPES_CONTRAST_CSV"""
 import sys, os
 import numpy as np, pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyArrowPatch
+from matplotlib.lines import Line2D
 from PIL import Image
 
 ROOT, SRES, OUT = sys.argv[1:4]
@@ -62,11 +63,10 @@ for c in ["C1", "C2", "C3"]:
     y -= 0.5
 ax3.axvline(0, color="#444444", lw=0.8); ax3.set_yticks(yt); ax3.set_yticklabels(yl, fontsize=9.5)
 ax3.set_xlabel("$W-E_1$ with 95% CI")
-from matplotlib.lines import Line2D
 ax3.legend(handles=[Line2D([], [], marker="D", ls="-", color="#3D3D3D", ms=4.5), Line2D([], [], marker="o", ls="-", color=W_COL, ms=5)],
            labels=["Endoscapes\n(original)", "SAGES\n(retrained)"], loc="lower center", bbox_to_anchor=(0.5, 0.99), ncol=2, frameon=False, fontsize=10,
            handletextpad=0.3, columnspacing=1.0)
 fig.text(0.985, 0.955, "Endoscapes images: CC BY-NC-SA 4.0 (Mascagni et al., 2025)", fontsize=8, ha="right", va="top", color="#555555")
-fig.text(0.015, 0.035, "Fewer than 3% of compared pairs came from the same unit and $W-E_1$ changed sign: report $\\alpha$, "
-         "a within-unit AUROC with unit-level intervals and a simple within-unit baseline.", fontsize=11.5, color="#222222")
+fig.text(0.015, 0.035, "Fewer than 3% of compared pairs came from the same unit, and no model ranked frames within an operation "
+         "significantly better than elapsed time.", fontsize=11.5, color="#222222")
 fig.savefig(f"{OUT}/Graphical_abstract.png", dpi=200); fig.savefig(f"{OUT}/Graphical_abstract.pdf")

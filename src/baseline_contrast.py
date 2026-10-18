@@ -1,8 +1,6 @@
-"""Reference-anchored within-unit AUROC and transition-distance sensitivity.
-For each dataset, criterion and seed: W and E2 of the model, of a time-only reference score, and their paired
-differences (model minus reference) with 95% percentile intervals from B matched cluster-bootstrap resamples.
-Also a Student-t interval for W with n_eff - 1 degrees of freedom, and W restricted to within-unit pairs whose frames are at least `gap` seconds apart.
-python reference_anchored.py <data_dir> <out_dir> [B]"""
+"""W and E2 of each model minus those of the elapsed-time baseline, with matched unit-bootstrap t intervals,
+W on time-discordant pairs, and W on pairs at least 15 s apart.
+Usage: python baseline_contrast.py DATA_DIR OUT_DIR [B]"""
 import sys, os
 import numpy as np, pandas as pd
 from scipy.stats import rankdata, t as tdist
@@ -126,7 +124,7 @@ def bh(p):
     q[o] = np.minimum.accumulate((p[o] * n / np.arange(1, n + 1))[::-1])[::-1]
     return np.minimum(q, 1)
 R["dW_tq"] = R.groupby("dataset").dW_tp.transform(lambda s: bh(s.values))
-R.to_csv(f"{OUT}/reference_anchored.csv", index=False)
+R.to_csv(f"{OUT}/baseline_contrast.csv", index=False)
 G = pd.DataFrame(gaprows); G.to_csv(f"{OUT}/transition_distance.csv", index=False)
 pd.set_option("display.width", 250)
 print(R[["dataset", "criterion", "seed", "W_model", "W_time", "dW", "dW_tlo", "dW_thi", "dW_tp", "dW_tq", "discordant_frac", "W_model_discordant"]].round(3).to_string())
