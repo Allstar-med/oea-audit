@@ -6,15 +6,18 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, FancyBboxPatch, FancyArrowPatch
 from matplotlib.lines import Line2D
+from matplotlib import font_manager
 from PIL import Image
 
 D, REF, OUT = sys.argv[1:4]
 MM = 1 / 25.4
-plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 7, "axes.labelsize": 7, "xtick.labelsize": 6.5,
+available_fonts = {font.name for font in font_manager.fontManager.ttflist}
+FONT = next(name for name in ("Liberation Sans", "Arial", "DejaVu Sans") if name in available_fonts)
+plt.rcParams.update({"font.family": FONT, "font.size": 7, "axes.labelsize": 7, "xtick.labelsize": 6.5,
                      "ytick.labelsize": 6.5, "legend.fontsize": 6.5, "axes.linewidth": 0.6, "axes.spines.top": False,
                      "axes.spines.right": False, "pdf.fonttype": 42, "legend.frameon": False, "hatch.linewidth": 0.5,
-                     "mathtext.fontset": "custom", "mathtext.rm": "Liberation Sans", "mathtext.it": "Liberation Sans:italic",
-                     "mathtext.bf": "Liberation Sans:bold"})
+                     "mathtext.fontset": "custom", "mathtext.rm": FONT, "mathtext.it": f"{FONT}:italic",
+                     "mathtext.bf": f"{FONT}:bold"})
 POS, NEG, WCOL, E2COL, INK = "#D55E00", "#56B4E9", "#009E73", "#CC79A7", "#222222"
 ENDO = "#3D3D3D"
 L = pd.read_csv(f"{D}/endoscapes/endoscapes_test_linkage.csv")
@@ -150,8 +153,8 @@ lines = [("$E_1$  pooled AUROC, all pairs", INK), ("$X$  cross-unit pairs only",
 for k, (s, c) in enumerate(lines):
     fig.text(tx, 0.725 - k * 0.022, s, fontsize=6.5, color=c, va="center")
 fig.text(tx, 0.632, "$E_1=\\alpha W+(1-\\alpha)X$", fontsize=8.5, va="center")
-fig.text(tx, 0.606, "$\\Delta W=W(\\mathrm{model})-W(\\mathrm{time\\ baseline})$", fontsize=7.2, va="center")
-fig.text(tx, 0.582, "unit-level bootstrap, matched across models;\n$t$ interval with $n_{\\mathrm{eff}}-1$ df for $W$", fontsize=6, va="center", color="#444444")
+fig.text(tx, 0.606, "$\\Delta W=W_{\\mathrm{model}}-W_{\\mathrm{time}}$", fontsize=7.2, va="center")
+fig.text(tx, 0.582, "matched unit-level bootstrap;\n$t$ interval with $n_{\\mathrm{eff}}-1$ df for $W$", fontsize=6, va="center", color="#444444")
 fig.text(0.02, 0.548, "green: within-unit pairs; grey: cross-unit pairs. Only $W$ and $E_2$ are\ninvariant to unit-specific monotone transformations (Proposition 2).", fontsize=6, color="#444444")
 
 # (d)
@@ -168,15 +171,15 @@ for k, (tag, (v, f)) in enumerate(PR.items()):
             bbox=dict(boxstyle="square,pad=0.15", fc=POS if r.y_c1 else NEG, ec="none"))
     ax.text(0.5, -0.05, f"votes {int(round(r.official_c1 * 3))}/3\nseed 17: {r.p_c1_seed17:.2f}\nseed 29: {r.p_c1_seed29:.2f}", transform=ax.transAxes, ha="center", va="top", fontsize=6.2)
     pos_ax[tag] = ax
-fig.text(0.425 + 0.135, 0.742, "operation 196: mixed-label (40 negative, 35 positive frames)", ha="center", fontsize=6, color="#444444")
-fig.text(0.725 + 0.135, 0.742, "operation 192: positive frames only", ha="center", fontsize=6, color="#444444")
+fig.text(0.425 + 0.135, 0.742, "operation 196: mixed-label\n40 negative, 35 positive frames", ha="center", va="top", fontsize=6, color="#444444")
+fig.text(0.725 + 0.135, 0.742, "operation 192:\npositive frames only", ha="center", va="top", fontsize=6, color="#444444")
 fig.text(0.425, 0.588, "The four positive–negative pairs (P1–N1, P1–N2, P2–N1, P2–N2) are cross-operation pairs:\nthey count in $E_1$ and $X$ but not in $W$.", fontsize=6, color=INK, va="top")
 fig.text(0.425, 0.560, "Seed 17 ordered all four incorrectly and seed 29 all four correctly, although within\noperation 196 the two models ranked frames almost equally well (AUROC 0.80 and 0.81).", fontsize=6, color=INK, va="top")
 
 # (e)
-y0, h0 = 0.128, 0.335
+y0, h0 = 0.145, 0.318
 box(0.0, 0.07, 0.325, 0.457)
-letter(0.008, 0.522, "e", "Pooled and within-unit AUROC differ")
+letter(0.008, 0.522, "e", "Pooled and within-unit AUROC")
 ax = fig.add_axes([0.095, y0, 0.215, h0])
 crit = ["C1", "C2", "C3"]; seeds = [17, 29, 43]
 yy = 0; yt, yl = [], []
@@ -198,7 +201,7 @@ fig.text(0.015, 0.078, "$\\alpha$ = 2.75–2.97%; $W-E_1$ from −0.074 to +0.12
 # (f)
 box(0.335, 0.07, 0.325, 0.457)
 letter(0.343, 0.522, "f", "Transfer to a second dataset")
-fig.text(0.35, 0.497, "Retrained checkpoints: SAGES 2024 and Endoscapes", fontsize=6.3, color="#444444", va="top")
+fig.text(0.35, 0.497, "Retrained on Endoscapes; tested on both datasets", fontsize=6.3, color="#444444", va="top")
 ax = fig.add_axes([0.43, y0, 0.215, h0])
 yy = 0; yt, yl = [], []
 for c in crit:
@@ -216,11 +219,11 @@ ax.set_xlabel("$W-E_1$"); ax.xaxis.grid(True, lw=0.4, color="#E5E5E5"); ax.set_a
 ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:.2f}".replace("-", "−") if abs(v) > 1e-9 else "0"))
 ax.legend(handles=[Line2D([], [], marker="o", ls="-", color=WCOL, ms=3.2, lw=0.9), Line2D([], [], marker="D", ls="", color=INK, ms=2.8)],
           labels=["SAGES, 95% CI", "Endoscapes"], loc="lower center", bbox_to_anchor=(0.45, 1.005), ncol=2, fontsize=6, handletextpad=0.3)
-fig.text(0.35, 0.078, "$\\alpha$ = 0.17–0.19%; open: CI includes 0; sign agreed in 7 of 9", fontsize=6, color="#444444")
+fig.text(0.35, 0.088, "$\\alpha$ = 0.17–0.19%; sign agreed in 7 of 9\nOpen markers: CI includes 0", fontsize=6, color="#444444", va="center")
 
 # (g)
 box(0.67, 0.07, 0.33, 0.457)
-letter(0.678, 0.522, "g", "Within-unit AUROC versus elapsed time")
+letter(0.678, 0.522, "g", "AUROC versus elapsed time")
 fig.text(0.685, 0.497, "$\\Delta W$ = $W$(model) − $W$(time within recording),\n95% $t$ interval from matched unit resamples", fontsize=6.3, color="#444444", va="top")
 ax = fig.add_axes([0.765, y0, 0.22, h0])
 yy = 0; yt, yl = [], []
@@ -240,7 +243,7 @@ ax.set_xlabel("$\\Delta W$"); ax.xaxis.grid(True, lw=0.4, color="#E5E5E5"); ax.s
 ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:.1f}".replace("-", "−") if abs(v) > 1e-9 else "0"))
 ax.text(0.02, 1.01, "\u2190 worse than time", transform=ax.transAxes, fontsize=6, color="#444444", va="bottom")
 ax.text(0.98, 1.01, "better \u2192", transform=ax.transAxes, fontsize=6, color="#444444", va="bottom", ha="right")
-fig.text(0.685, 0.078, "diamonds Endoscapes, circles SAGES; open: includes 0", fontsize=6, color="#444444")
+fig.text(0.685, 0.088, "Diamonds: Endoscapes; circles: SAGES\nOpen markers: interval includes 0", fontsize=6, color="#444444", va="center")
 
 # (h)
 box(0.0, 0.0, 1.0, 0.062, fc="#FFFFFF")
@@ -248,8 +251,8 @@ letter(0.008, 0.058, "h", "Evidence chain")
 steps = ["SHA-256 match for 1,663/1,663\nimages and 1,000/1,000 videos",
          "duplicate rule fixed before training;\nmodel manifest before inference",
          "checkpoint hashes verified at\ninference; no SAGES in training",
-         "two independent implementations\n(point estimates within $5\\times10^{-16}$)",
-         "public code reproduces every\nrow-level result exactly"]
+         "point estimates agree to\nnumerical precision",
+         "analysis with local inputs\nrecomputes reported estimands"]
 for k, s in enumerate(steps):
     x = 0.012 + k * 0.198
     fig.patches.append(FancyBboxPatch((x, 0.006), 0.182, 0.032, boxstyle="round,pad=0.0,rounding_size=0.006", transform=fig.transFigure,

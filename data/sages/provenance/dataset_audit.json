@@ -5,7 +5,7 @@
     "source_url": "https://huggingface.co/datasets/CAMMA-public/SAGES_CVS_Challenge_2024",
     "dataset_version": "hf:CAMMA-public/SAGES_CVS_Challenge_2024@deef093e7fc6522a6c5e6bd3d3bab3408e7588d4",
     "download": "2026-10-16, huggingface_hub snapshot_download pinned to the revision above; 3225/3225 files present with byte sizes matching repository metadata; all 1000 videos SHA256-identical to the repository LFS hashes",
-    "citation": "Alapatt D, et al. The SAGES Critical View of Safety Challenge: A Global Benchmark for AI-Assisted Surgical Quality Assessment. arXiv:2509.17100 (2025)"
+    "citation": "Alapatt D, et al. arXiv:2509.17100 (2025). https://arxiv.org/abs/2509.17100"
   },
   "license": {
     "name": "CC BY-NC 4.0",
